@@ -36,22 +36,24 @@ List<Game> games =
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 
+var group = app.MapGroup("games");
+
 app.MapGet("/", () => "Hello World!");
-app.MapGet("/games", () => games);
-app.MapGet("/games/{id:int}", (int id) =>
+group.MapGet("/", () => games);
+group.MapGet("/{id:int}", (int id) =>
 {
     var game = games.Find(item => item.Id == id);
     return game is null ? Results.NotFound("Game Not found!") : Results.Ok(game);
 });
 
-app.MapPost("/games", (Game game) =>
+group.MapPost("/", (Game game) =>
 {
     game.Id = games.Max(item => item.Id) + 1;
     games.Add(game);
     return Results.Ok("Added!");
 });
 
-app.MapDelete("/games/{id:int}", (int id) =>
+group.MapDelete("/{id:int}", (int id) =>
 {
     var game = games.Find(item => item.Id == id);
     if (game is not null)
