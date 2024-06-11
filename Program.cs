@@ -11,12 +11,54 @@ List<Game> games =
         Price = 19.99M,
         ReleaseDate = new DateTime(),
         ImageUri = "https://placehold.co/100"
+    },
+    new Game
+    {
+        Id = 2,
+        Name = "CS GO2.0222",
+        Genre = "Simple2",
+        Price = 39.99M,
+        ReleaseDate = new DateTime(),
+        ImageUri = "https://placehold.co/300"
+    },
+    new Game
+    {
+        Id = 3,
+        Name = "CS GO2.033",
+        Genre = "Simple33",
+        Price = 333.99M,
+        ReleaseDate = new DateTime(),
+        ImageUri = "https://placehold.co/200"
     }
+    
 ];
 
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 
 app.MapGet("/", () => "Hello World!");
+app.MapGet("/games", () => games);
+app.MapGet("/games/{id:int}", (int id) =>
+{
+    var game = games.Find(item => item.Id == id);
+    return game is null ? Results.NotFound("Game Not found!") : Results.Ok(game);
+});
 
+app.MapPost("/games", (Game game) =>
+{
+    game.Id = games.Max(item => item.Id) + 1;
+    games.Add(game);
+    return Results.Ok("Added!");
+});
+
+app.MapDelete("/games/{id:int}", (int id) =>
+{
+    var game = games.Find(item => item.Id == id);
+    if (game is not null)
+    {
+        games.Remove(game);
+    }
+
+    return Results.NoContent();
+});
 app.Run();
