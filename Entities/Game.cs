@@ -5,6 +5,7 @@ namespace GameStore.Api.Entities;
 public class Game
 {
     public int Id { get; set; }
+    
     [Required]
     [StringLength(50)]
     public required string Name { get; set; }
